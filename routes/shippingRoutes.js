@@ -19,17 +19,24 @@ router.post("/create", async (req, res) => {
 });
 
 router.put("/cancel", async (req, res) => {
-  const shippingId = req.body;
-//   if (shippingId == {}) {
-//     return res.status(404).json({
-//       error: "Missing shippingId",
-//     });
-//   }
+  let shippingId = null;
+  shippingId = req.body.shippingId;
+  if (shippingId === null) {
+    return res.status(404).json({
+      error: "Missing shippingId",
+    });
+  }
+  try{
   const product = await prisma.shipping.update({
     where: { id: Number(shippingId) },
     data: { status: "cancelled" },
   });
-  return res.status(200).json(product);
+  return res.status(200).json(product);}
+  finally{
+     return res.status(404).json({
+          error: "Missing shippingId",
+        });
+  }
 });
 
 router.get("/get", async (req, res) => {
